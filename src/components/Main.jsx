@@ -1,10 +1,34 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../App';
 import Footer from "./Footer";
 
 function Main() {
+  const [remainingDays, setRemainingDays] = useState(0);
+  const [remainingHours, setRemainingHours] = useState(0);
+  const [remainingMinutes, setRemainingMinutes] = useState(0);
+
+  const getRemainingTime = () => {
+    const targetDay = new Date("April 25 2025 00:00:00").getTime();
+    const distance = targetDay - new Date().getTime();
+
+    const days = Math.floor(distance / 1000 / 60 / 60 / 24);
+    const hours = Math.floor(distance / 1000 / 60 / 60) % 24;
+    const minutes = Math.floor(distance / 1000 / 60) % 60;
+    console.log(days , hours , minutes);
+    setRemainingDays(days);
+    setRemainingHours(hours)
+    setRemainingMinutes(minutes);
+  }
+
+  useEffect(() => {
+    getRemainingTime();
+    setInterval(() => {
+      getRemainingTime();
+    },5000)
+  },[])
+
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat , setUser , setUserData } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData } = useContext(AppContext);
   const emailRef = useRef(null);
 
   const copy_email = () => {
@@ -57,6 +81,7 @@ function Main() {
       </div>
       <div className="chat_button">
         <button onClick={() => setShowChat(true)}><div className="left_side"><i className="bi bi-chat-dots"></i> Chat</div> <i className="bi bi-chevron-right"></i></button>
+        <button className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
       </div>
       <div className="top_10_users">
         <div className="title">Top 10 Users</div>
@@ -159,9 +184,9 @@ function Main() {
           <div className="title">Next Quiz Will Be After</div>
           <div className="time">
             <div className="content">
-              <p>5 Days</p>
-              <p>4 Hours</p>
-              <p>25 Minutes</p>
+              <p>{remainingDays} Days</p>
+              <p>{remainingHours} Hours</p>
+              <p>{remainingMinutes} Minutes</p>
             </div>
           </div>
         </div>
@@ -175,7 +200,7 @@ function Main() {
         <div className="contact_with_me">
           <div className="title">Owner Social Links</div>
           <div className="links">
-            <i data-name="Instagram" className='bi-instagram'></i>
+            <a href="https://www.instagram.com/sme.dev" target='_blanc'><i data-name="Instagram" className='bi-instagram'></i></a>
             <i data-name="Github" className="bi-github"></i>
             <i data-name="LinkedIn" className="bi-linkedin"></i>
           </div>

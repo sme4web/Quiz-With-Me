@@ -52,7 +52,7 @@ function App() {
           setUser("");
           setShowSpinner(false);
         }
-      }).catch((err) => {
+      }).catch(() => {
         setPopUpValue("Something went wrong!");
       })
     }

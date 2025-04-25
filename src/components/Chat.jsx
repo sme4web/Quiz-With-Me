@@ -4,7 +4,7 @@ import { db } from "./Firebase";
 import { set, ref, onChildAdded, onChildRemoved, remove, get } from "firebase/database";
 
 function Chat() {
-    const { setShowChat, setPopUpValue, userData } = useContext(AppContext);
+    const { setShowChat, setPopUpValue, userData , filterName } = useContext(AppContext);
     const [startAnimation, setStartAnimation] = useState(false);
     const [failedFetchingImage, setFailedFetchingImage] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -102,7 +102,7 @@ function Chat() {
                                 :
                                 <div id={"msg_" + message.id} key={"msg_" + i} className={"message user " + (failedFetchingImage && "no_image")}>
                                     <div className="content">
-                                        <div className="from">{message.name}</div>
+                                        <div className="from">{filterName(message.name)}</div>
                                         <div className="message_content">
                                             <p className="message_text">{message.text}</p>
                                         </div>

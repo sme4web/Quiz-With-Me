@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../App';
 import Footer from "./Footer";
+import { io } from "socket.io-client";
+
+const socket = io.connect("http://localhost:3001");
 
 function Main() {
   const [remainingDays, setRemainingDays] = useState(0);
@@ -8,13 +11,12 @@ function Main() {
   const [remainingMinutes, setRemainingMinutes] = useState(0);
 
   const getRemainingTime = () => {
-    const targetDay = new Date("April 25 2025 00:00:00").getTime();
+    const targetDay = new Date("May 2 2025 00:00:00").getTime();
     const distance = targetDay - new Date().getTime();
 
     const days = Math.floor(distance / 1000 / 60 / 60 / 24);
     const hours = Math.floor(distance / 1000 / 60 / 60) % 24;
     const minutes = Math.floor(distance / 1000 / 60) % 60;
-    console.log(days , hours , minutes);
     setRemainingDays(days);
     setRemainingHours(hours)
     setRemainingMinutes(minutes);
@@ -28,7 +30,7 @@ function Main() {
   },[])
 
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat, setUser, setUserData } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName } = useContext(AppContext);
   const emailRef = useRef(null);
 
   const copy_email = () => {
@@ -48,20 +50,6 @@ function Main() {
       }, 0)
       setPopUpValue("Email has been copied successfully!");
     }
-  }
-
-  const filterName = (name) => {
-    let maxLength = 13;
-    let newName = "";
-    if (name.length > maxLength) {
-      for (let i = 0; i < 10; i++) {
-        newName += name[i];
-      }
-      newName += "...";
-    } else {
-      return name;
-    }
-    return newName;
   }
 
   const logout = () => {
@@ -201,8 +189,8 @@ function Main() {
           <div className="title">Owner Social Links</div>
           <div className="links">
             <a href="https://www.instagram.com/sme.dev" target='_blanc'><i data-name="Instagram" className='bi-instagram'></i></a>
-            <i data-name="Github" className="bi-github"></i>
-            <i data-name="LinkedIn" className="bi-linkedin"></i>
+            <a href="https://github.com/smeDeveloper" target='_blanc'><i data-name="Github" className="bi-github"></i></a>
+            <a href="https://www.linkedin.com/in/sme-dev-5036a5350/" target='_blanc'><i data-name="LinkedIn" className="bi-linkedin"></i></a>
           </div>
         </div>
       </div>

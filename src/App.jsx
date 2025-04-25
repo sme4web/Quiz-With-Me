@@ -10,6 +10,7 @@ import Main from "./components/Main";
 import { get, ref } from "firebase/database";
 import { db } from "./components/Firebase";
 import Chat from "./components/Chat";
+import QuizPage from "./components/Quiz-page";
 
 export const AppContext = createContext();
 
@@ -58,13 +59,28 @@ function App() {
     }
   }, [user])
 
+  const filterName = (name) => {
+    let maxLength = 13;
+    let newName = "";
+    if (name.length > maxLength) {
+      for (let i = 0; i < 10; i++) {
+        newName += name[i];
+      }
+      newName += "...";
+    } else {
+      return name;
+    }
+    return newName;
+  }
+
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat }}>
-        {user ? <Main /> : (currentPage === "sign in" ? <SignIn /> : <SignUp />)}
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName }}>
+        {/* {user ? <Main /> : (currentPage === "sign in" ? <SignIn /> : <SignUp />)}
         {popUpValue && <PopUpMessage value={popUpValue} />}
         {showResetPasswordMessage && <ResetPasswordMessage />}
-        {showChat && <Chat />}
+        {showChat && <Chat />} */}
+        <QuizPage />
       </AppContext.Provider>
       {connected ? "" : <NoInternetConnection />}
       {showSpinner ? <Spinner /> : ""}

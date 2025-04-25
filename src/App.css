@@ -16,9 +16,6 @@ body {
   align-items: center ;
   justify-content: center ;
   z-index: -1;
-}
-
-body:has(.sign_in_form , .sign_up_form , .main_page) {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 500% 500%;
   animation: gradient 15s ease infinite;
@@ -799,6 +796,10 @@ footer {
   padding: 10px ;
 }
 
+.contact_with_me .links a {
+  text-decoration: none ;
+}
+
 .contact_with_me .links i {
   color: #555 ;
   cursor: pointer ;
@@ -825,6 +826,36 @@ footer {
 
 .contact_with_me .links i:hover {
   color: #111 ;
+}
+
+.quiz_page_container {
+  height: 100dvh ; 
+  flex: 1 ;
+  display: flex ;
+  flex-direction: column ; 
+}
+
+.quiz_page_container .header {
+  padding: 10px ;
+  margin: 10px ;
+  border-radius: 10px ;
+  display: flex ;
+  align-items: center ;
+  background: #eeeeeecb ;
+}
+
+.quiz_page_container .header .content {
+  flex: 1 ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  gap: 10px ;
+  border-right: 2px solid #fff ;
+  color: #555 ;
+}
+
+.quiz_page_container .header .content:last-child {
+  border: none ; 
 }
 
 @keyframes backgroundAnimation {
@@ -953,5 +984,11 @@ footer {
   .main_page .bottom_content .contact_with_me:has(.links) {
     grid-column: 1/2 ;
     grid-row: 4/5 ;
+  }
+}
+
+@media screen and (max-width:440px) {
+  .quiz_page_container .header .content.website_name {
+    display: none ;
   }
 }

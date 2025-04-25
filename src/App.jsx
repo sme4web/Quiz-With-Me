@@ -75,11 +75,11 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName }}>
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName , showSpinner }}>
         {/* {user ? <Main /> : (currentPage === "sign in" ? <SignIn /> : <SignUp />)}
-        {popUpValue && <PopUpMessage value={popUpValue} />}
         {showResetPasswordMessage && <ResetPasswordMessage />}
         {showChat && <Chat />} */}
+        {popUpValue && <PopUpMessage value={popUpValue} />}
         <QuizPage />
       </AppContext.Provider>
       {connected ? "" : <NoInternetConnection />}

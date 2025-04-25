@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
+
 * {
   padding: 0;
   margin: 0;
@@ -833,6 +835,7 @@ footer {
   flex: 1 ;
   display: flex ;
   flex-direction: column ; 
+  justify-content: space-between ;
 }
 
 .quiz_page_container .header {
@@ -852,10 +855,94 @@ footer {
   gap: 10px ;
   border-right: 2px solid #fff ;
   color: #555 ;
+  font-family: "Chakra Petch", sans-serif;
 }
 
-.quiz_page_container .header .content:last-child {
+.quiz_page_container .question_container {
+  display: flex ;
+  flex-direction: column ;
+}
+
+.quiz_page_container .question_container .content {
+  display: flex ;
+  flex-direction: column ;
+  align-items: center ;
+  gap: 10px ;
+}
+
+.quiz_page_container .question_container .question {
+  padding: 10px 0px ;
+  border-radius: 10px ;
+  background: #eeeeeecb ;
+  color: #555 ;
+  font-weight: bold ;
+  text-align: center ;
+  width: 70% ;
+  min-width: 280px ;
+}
+
+.quiz_page_container .question_container .question p {
+  padding: 0px 5px ;
+}
+
+.quiz_page_container .question_container .answers {
+  display: flex ;
+  flex-direction: column ;
+  padding: 0px ;
+  border-radius: 10px ;
+  background: #eeeeeecb ;
+  width: 70% ;
+  min-width: 280px ;
+  overflow: hidden ;
+}
+
+.quiz_page_container .question_container .answers .answer {
+  all: unset ;
+  padding: 10px ;
+  border-bottom: 2px solid #fff ;
+  text-align: center ;
+  color: #555 ;
+  cursor: pointer ;
+  font-weight: bold ;
+}
+
+.quiz_page_container .question_container .answers .answer:hover {
+  background: #ffffff77 ;
+}
+
+.quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child {
   border: none ; 
+}
+
+.controls_container {
+  display: flex ;
+  align-items: center ;
+  justify-content: space-between ;
+  padding: 10px ;
+  border-radius: 10px ;
+  background: #eeeeeecb ; 
+  margin: 10px ;
+}
+
+.controls_container button {
+  all: unset ;
+  padding: 7px 15px ;
+  border-radius: 10px ;
+  cursor: pointer ;
+  background: #eeeeeecb ;
+  color: #555 ;
+  font-weight: bold ;
+  font-family: "Chakra Petch", sans-serif;
+}
+
+.controls_container button:disabled {
+  background: #ffffff77 ;
+  color: #888 ;
+  cursor: not-allowed ;
+}
+
+.controls_container button:hover:not(:disabled) {
+  background-color: #ffffffc4 ;
 }
 
 @keyframes backgroundAnimation {
@@ -992,3 +1079,17 @@ footer {
     display: none ;
   }
 }
+
+/* 
+
+    // useEffect(() => {
+    //     try {
+    //         fetch(process.env.FETCH_QUESTIONS).then((res) => {
+    //             return res.json();
+    //         }).then((data) => {
+    //             setQuestions(data.data);
+    //         })
+    //     } catch (error) {
+    //         console.error("Error fetching quiz questions:", error);
+    //     }
+    // }, [])*/

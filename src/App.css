@@ -35,7 +35,7 @@ body {
   position: fixed ;
   top: 0 ;
   left: 0 ;
-  height: 100vh ;
+  min-height: 100vh ;
   width: 100% ;
   display: flex ;
   align-items: center ;
@@ -312,7 +312,7 @@ body {
 
 .main_page {
   flex: 1 ;
-  height: 100% ;
+  min-height: 100% ;
   display: flex ;
   flex-direction: column ;
   position: relative ;
@@ -622,7 +622,7 @@ footer {
   position: fixed ;
   top: 0 ;
   left: 0 ;
-  height: 100% ;
+  min-height: 100% ;
   width: 100% ;
   background: #fff ;
   display: flex ;
@@ -831,7 +831,7 @@ footer {
 }
 
 .quiz_page_container {
-  height: 100dvh ; 
+  min-height: 100dvh ; 
   flex: 1 ;
   display: flex ;
   flex-direction: column ; 
@@ -914,7 +914,7 @@ footer {
   background: #ffffffc2 ;
 }
 
-.quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child {
+.quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child , .enter_quiz_container .info div:last-child {
   border: none ; 
 }
 
@@ -947,6 +947,76 @@ footer {
 
 .controls_container button:hover:not(:disabled) {
   background-color: #ffffffc4 ;
+}
+
+.enter_quiz_container , .result_container {
+  display: flex ;
+  flex-direction: column ;
+  justify-content: space-between ;
+  min-height: 100dvh ;
+  flex: 1 ;
+}
+
+.enter_quiz_container .title , .result_container .result_message {
+  padding: 7px ;
+  margin: 10px ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  border-radius: 10px ;
+  background: #eeeeeecb ;
+  color: #555 ;
+  font-family: "Chakra Petch", sans-serif;
+  text-align: center ;
+}
+
+.enter_quiz_container .info , .result_container .info {
+  display: flex; 
+  flex-direction: column ;
+  margin: 10px ;
+  border-radius: 10px ;
+  background: #eeeeeecb ;
+}
+
+.enter_quiz_container .info div , .result_container .info div {
+  display: flex ;
+  align-items: center ;
+  justify-content: space-between ;
+  padding: 10px ;
+  border-bottom: 2px solid #eeeeeecb ;
+  font-family: "Chakra Petch", sans-serif;
+}
+
+.result_container .info div div {
+  all: unset ;
+  display: flex ;
+  align-items: center ;
+  gap: 5px ;
+}
+
+.result_container .info div div i {
+  cursor: pointer ;
+}
+
+.enter_quiz_container .info div p , .result_container .info div p {
+  padding: 3px 5px ;
+  border-radius: 5px ;
+  background: #00c3ff ;
+  color: #fff ;
+  font-size: 14px ;
+  font-weight: bold ;
+}
+
+.enter_quiz_container button , .result_container button {
+  all: unset ;
+  padding: 10px ;
+  border-radius: 10px ;
+  text-align: center ;
+  color: #555 ;
+  background: #eeeeeecb ; 
+  margin: 10px ;
+  cursor: pointer ;
+  font-family: "Chakra Petch", sans-serif;
 }
 
 @keyframes backgroundAnimation {

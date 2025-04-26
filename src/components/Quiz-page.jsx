@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, use } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { AppContext } from "../App";
 
 function QuizPage() {
@@ -13,10 +13,8 @@ function QuizPage() {
     const [notAnsweredQuestions , setNotAnsweredQuestions] = useState([]);
     const [wrongAnswers , setWrongAnswers] = useState([]);
 
-    console.log(Math.floor((endsAt - new Date().getTime()) / 1000 / 60) , Math.floor((endsAt - new Date().getTime()) / 1000 % 60));
-
-    const [minutes , setMinutes] = useState(Math.floor((new Date().getTime() - startedTime) / 60000));
-    const [seconds , setSeconds] = useState(Math.floor(((new Date().getTime() - startedTime) / 1000) % 60));
+    const [minutes , setMinutes] = useState(Math.floor((endsAt - new Date().getTime()) / 1000 / 60));
+    const [seconds , setSeconds] = useState(Math.floor((endsAt - new Date().getTime()) / 1000 % 60));
 
     useEffect(() => {
             fetch(process.env.REACT_APP_GET_QUESTIONS_API).then((res) => {
@@ -54,8 +52,8 @@ function QuizPage() {
         
         if (!showSpinner) {
             interval = setInterval(() => {
-                setSeconds(Math.floor(((new Date().getTime() - startedTime) / 1000) % 60));
-                setMinutes(Math.floor((new Date().getTime() - startedTime) / 60000));
+                setSeconds(Math.floor((endsAt - new Date().getTime()) / 1000 % 60));
+                setMinutes(Math.floor((endsAt - new Date().getTime()) / 1000 / 60));
             }, 1000);
         }
     

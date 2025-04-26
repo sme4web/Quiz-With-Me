@@ -11,10 +11,10 @@ import { get, ref } from "firebase/database";
 import { db } from "./components/Firebase";
 import Chat from "./components/Chat";
 import QuizPage from "./components/Quiz-page";
+import EnterQuiz from "./components/Enter-Quiz";
+import Result from "./components/Result";
 
 export const AppContext = createContext();
-
-console.log(process.env.REACT_APP_GET_QUESTIONS_API);
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem("user"));
@@ -25,6 +25,10 @@ function App() {
   const [connected, setConnected] = useState(true);
   const [showResetPasswordMessage, setShowResetPasswordMessage] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [userScore , setUserScore] = useState(0);
+  const [userRank , setUserRank] = useState(0);
+  const [allAnswers , setAllAnswers] = useState([]);
+  const [showQuizPage , setShowQuizPage] = useState(false);
 
   useEffect(() => {
     if (navigator.onLine) {
@@ -77,12 +81,14 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName , showSpinner }}>
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName , showSpinner , setUserScore , setUserRank , userScore , userRank , allAnswers , setAllAnswers }}>
         {/* {user ? <Main /> : (currentPage === "sign in" ? <SignIn /> : <SignUp />)}
         {showResetPasswordMessage && <ResetPasswordMessage />}
-        {showChat && <Chat />} */}
+        {showChat && <Chat />}
         {popUpValue && <PopUpMessage value={popUpValue} />}
-        <QuizPage />
+        {showQuizPage && <QuizPage />} */}
+        {/* <EnterQuiz /> */}
+        <Result />
       </AppContext.Provider>
       {connected ? "" : <NoInternetConnection />}
       {showSpinner ? <Spinner /> : ""}

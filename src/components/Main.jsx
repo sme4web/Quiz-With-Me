@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../App';
 import Footer from "./Footer";
-import { io } from "socket.io-client";
-
-const socket = io.connect("http://localhost:3001");
 
 function Main() {
   const [remainingDays, setRemainingDays] = useState(0);
@@ -30,7 +27,7 @@ function Main() {
   },[])
 
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName , userScore , userRank , setCurrentPage } = useContext(AppContext);
   const emailRef = useRef(null);
 
   const copy_email = () => {
@@ -63,8 +60,8 @@ function Main() {
       <div className="top">
         <div className="hello_message"><p>Hello {filterName(userData.username || "")}!</p> <button onClick={logout}>Logout</button></div>
         <div className="items">
-          <div className="last_score container_p">Score <p>105</p></div>
-          <div className="rank container_p">Rank <p className='ended'>Ended</p></div>
+          <div className="last_score container_p">Score <p>{userScore}</p></div>
+          <div className="rank container_p">Rank <p>#{userRank}</p></div>
         </div>
       </div>
       <div className="chat_button">

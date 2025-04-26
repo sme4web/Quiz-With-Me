@@ -910,6 +910,10 @@ footer {
   background: #ffffff77 ;
 }
 
+.quiz_page_container .question_container .answers .answer.active {
+  background: #ffffffc2 ;
+}
+
 .quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child {
   border: none ; 
 }
@@ -1079,17 +1083,3 @@ footer {
     display: none ;
   }
 }
-
-/* 
-
-    // useEffect(() => {
-    //     try {
-    //         fetch(process.env.FETCH_QUESTIONS).then((res) => {
-    //             return res.json();
-    //         }).then((data) => {
-    //             setQuestions(data.data);
-    //         })
-    //     } catch (error) {
-    //         console.error("Error fetching quiz questions:", error);
-    //     }
-    // }, [])*/

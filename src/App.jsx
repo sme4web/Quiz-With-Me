@@ -14,6 +14,8 @@ import QuizPage from "./components/Quiz-page";
 
 export const AppContext = createContext();
 
+console.log(process.env.REACT_APP_GET_QUESTIONS_API);
+
 function App() {
   const [user, setUser] = useState(localStorage.getItem("user"));
   const [userData, setUserData] = useState({});

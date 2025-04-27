@@ -914,7 +914,7 @@ footer {
   background: #ffffffc2 ;
 }
 
-.quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child , .enter_quiz_container .info div:last-child {
+.quiz_page_container .header .content:last-child , .quiz_page_container .question_container .answers .answer:last-child , .enter_quiz_container .info div:last-child , .enter_quiz_container .info div , .result_container .info div:last-child {
   border: none ; 
 }
 

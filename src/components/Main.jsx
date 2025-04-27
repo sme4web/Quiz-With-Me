@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../App';
 import Footer from "./Footer";
+import { useNavigate } from 'react-router-dom';
 
 function Main() {
+  const navigate = useNavigate();
   const [remainingDays, setRemainingDays] = useState(0);
   const [remainingHours, setRemainingHours] = useState(0);
   const [remainingMinutes, setRemainingMinutes] = useState(0);
@@ -66,7 +68,7 @@ function Main() {
       </div>
       <div className="chat_button">
         <button onClick={() => setShowChat(true)}><div className="left_side"><i className="bi bi-chat-dots"></i> Chat</div> <i className="bi bi-chevron-right"></i></button>
-        <button className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
+        <button onClick={() => navigate("/start-quiz")} className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
       </div>
       <div className="top_10_users">
         <div className="title">Top 10 Users</div>

@@ -3,10 +3,12 @@ import { db, auth } from "./Firebase";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ref, get } from "firebase/database";
 import { AppContext } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
 
+    const navigate = useNavigate();
     const emailInpRef = useRef(null);
     const passwordInpRef = useRef(null);
 
@@ -59,7 +61,7 @@ const SignIn = () => {
                     <p className="forget_password" onClick={() => setShowResetPasswordMessage(true)}>Forget Password?</p>
                 </div>
                 <button className="sign_in" type="submit">Submit</button>
-                <div className="account_state">I don't have an account. <button type='button' className="change_page" onClick={() => setCurrentPage("sign up")}>Sign Up</button></div>
+                <div className="account_state">I don't have an account. <button type='button' className="change_page" onClick={() => navigate("/sign-up")}>Sign Up</button></div>
             </form>
         </div>
     )

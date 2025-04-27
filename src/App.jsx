@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import './App.css';
+import { Route, Routes, useNavigate } from "react-router-dom";
 import SignUp from "./components/Sign_Up";
 import SignIn from "./components/Sign_In";
 import Spinner from "./components/Spinner";
@@ -13,22 +13,23 @@ import Chat from "./components/Chat";
 import QuizPage from "./components/Quiz-page";
 import EnterQuiz from "./components/Enter-Quiz";
 import Result from "./components/Result";
+import './App.css';
 
 export const AppContext = createContext();
 
 function App() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(localStorage.getItem("user"));
   const [userData, setUserData] = useState({});
   const [showSpinner, setShowSpinner] = useState(false);
   const [popUpValue, setPopUpValue] = useState("");
-  const [currentPage, setCurrentPage] = useState("sign up");
   const [connected, setConnected] = useState(true);
   const [showResetPasswordMessage, setShowResetPasswordMessage] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [userScore , setUserScore] = useState(0);
-  const [userRank , setUserRank] = useState(0);
-  const [allAnswers , setAllAnswers] = useState([]);
-  const [showQuizPage , setShowQuizPage] = useState(false);
+  const [userScore, setUserScore] = useState(0);
+  const [userRank, setUserRank] = useState(0);
+  const [allAnswers, setAllAnswers] = useState([]);
+  const [StoredChoosedAnswers, setStoredChoosedAnswers] = useState([]);
 
   useEffect(() => {
     if (navigator.onLine) {
@@ -54,7 +55,11 @@ function App() {
         if (data) {
           setUserData(data);
           setShowSpinner(false);
-        }else {
+          setStoredChoosedAnswers(data.StoredChoosedAnswers || []);
+          if (data.quizStarted) {
+            navigate("/quiz-page");
+          }
+        } else {
           localStorage.removeItem("user");
           setUser("");
           setShowSpinner(false);
@@ -81,14 +86,18 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat , filterName , showSpinner , setUserScore , setUserRank , userScore , userRank , allAnswers , setAllAnswers }}>
-        {/* {user ? <Main /> : (currentPage === "sign in" ? <SignIn /> : <SignUp />)}
-        {showResetPasswordMessage && <ResetPasswordMessage />}
-        {showChat && <Chat />}
-        {popUpValue && <PopUpMessage value={popUpValue} />}
-        {showQuizPage && <QuizPage />} */}
-        {/* <EnterQuiz /> */}
-        <Result />
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, allAnswers, setAllAnswers , StoredChoosedAnswers }}>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/start-quiz" element={<EnterQuiz />} />
+          <Route path="/quiz-page" element={<QuizPage />} />
+          <Route path="/result" element={<Result />} />
+        </Routes>
+        {showChat ? <Chat /> : ""}
+        {showResetPasswordMessage ? <ResetPasswordMessage /> : ""}
+        {popUpValue ? <PopUpMessage value={popUpValue} setPopUpValue={setPopUpValue} /> : ""}
       </AppContext.Provider>
       {connected ? "" : <NoInternetConnection />}
       {showSpinner ? <Spinner /> : ""}

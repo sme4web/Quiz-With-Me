@@ -3,10 +3,11 @@ import { db, auth } from "./Firebase";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { set, ref } from "firebase/database";
 import { AppContext } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
-
+    const navigate = useNavigate();
     const emailInpRef = useRef(null);
     const passwordInpRef = useRef(null);
     const userNameInpRef = useRef(null);
@@ -68,7 +69,7 @@ const SignUp = () => {
                     <i onClick={() => setShowPassword(!showPassword)} className={showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"}></i>
                 </div>
                 <button className="sign_up" type="submit">Submit</button>
-                <div className="account_state">I already have an account. <button type='button' className="change_page" onClick={() => setCurrentPage("sign in")}>Sign In</button></div>
+                <div className="account_state">I already have an account. <button type='button' className="change_page" onClick={() => navigate('/sign-in')}>Sign In</button></div>
             </form>
         </div>
     )

@@ -1,14 +1,15 @@
 import { useEffect, useState, useContext } from 'react';
 import { AppContext } from "../App";
+import { update , ref } from "firebase/database";
+import { db } from "./Firebase";
 
 function QuizPage() {
-    const { showSpinner, setPopUpValue } = useContext(AppContext);
+    const { showSpinner, setPopUpValue , userData , StoredChoosedAnswers } = useContext(AppContext);
     const [questions, setQuestions] = useState([]);
-    const [startedTime, setStartedTime] = useState(new Date().getTime());
-    const [endsAt , setEndsAt] = useState(new Date().getTime() + 3600000);
+    const endsAt = parseInt(userData.quizEndsAt);
     const [showTimeout, setShowTimeout] = useState(false);
     const [questionIndex, setQuestionIndex] = useState(1);
-    const [choosedAnswers , setChoosedAnswers] = useState([]);
+    const [choosedAnswers , setChoosedAnswers] = useState(StoredChoosedAnswers || []);
     const [score , setScore] = useState(0);
     const [notAnsweredQuestions , setNotAnsweredQuestions] = useState([]);
     const [wrongAnswers , setWrongAnswers] = useState([]);
@@ -86,10 +87,14 @@ function QuizPage() {
                 }
             }
         }
-        console.log(score , wrongAnswers , unAnsweredQuestions);
         setScore(socre);
         setWrongAnswers(wrongAnswers);
         setNotAnsweredQuestions(unAnsweredQuestions);
+        update(ref(db, "users/" + localStorage.getItem("user")), {
+            finished: true,
+            finishedAt: new Date().getTime(),
+            score: socre,
+        })
     }
 
     const setAnswer = (index) => {
@@ -97,6 +102,13 @@ function QuizPage() {
         let answers = choosedAnswers;
         answers[questionIndex - 1] = the_answer;
         setChoosedAnswers(answers);
+        update(ref(db, "users/" + localStorage.getItem("user")), {
+            choosedAnswers: choosedAnswers, 
+        }).catch((err) => {
+            console.log(err.code);
+            console.log("Cannot save the answers in the database!");;
+        })
+
     }
 
     return (

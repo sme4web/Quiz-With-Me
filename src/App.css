@@ -411,13 +411,6 @@ body {
   transition: color 0.2s ;
 }
 
-.chat_button button.start_quiz_button:hover {
-  color: #fff ;
-  background: linear-gradient(to right , #eeeeeecb , #0b0) ;
-  background-size: 100% 100% ;
-  animation: backgroundAnimation 0.5s 1 ease ;
-}
-
 .top_10_users {
   display: flex ;
   flex-direction: column ;
@@ -968,6 +961,13 @@ footer {
   color: #555 ;
   font-family: "Chakra Petch", sans-serif;
   text-align: center ;
+  position: relative ;
+}
+
+.enter_quiz_container .title i {
+  position: absolute ;
+  left: 10px ;
+  cursor: pointer ;
 }
 
 .enter_quiz_container .info , .result_container .info {
@@ -1017,16 +1017,6 @@ footer {
   margin: 10px ;
   cursor: pointer ;
   font-family: "Chakra Petch", sans-serif;
-}
-
-@keyframes backgroundAnimation {
-    0% {
-      background-size: 400% 100% ;
-    }
-
-    100% {
-      background-size: 100% 100% ;
-    }
 }
 
 @keyframes go_up {

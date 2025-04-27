@@ -29,7 +29,9 @@ function App() {
   const [userScore, setUserScore] = useState(0);
   const [userRank, setUserRank] = useState(0);
   const [allAnswers, setAllAnswers] = useState([]);
-  const [StoredChoosedAnswers, setStoredChoosedAnswers] = useState([]);
+  const [storedChoosedAnswers, setStoredChoosedAnswers] = useState([]);
+  const [questions , setQuestions] = useState([]);
+  const [allPlayedUsers , setAllPlayedUsers] = useState([]);
 
   useEffect(() => {
     if (navigator.onLine) {
@@ -55,9 +57,11 @@ function App() {
         if (data) {
           setUserData(data);
           setShowSpinner(false);
-          setStoredChoosedAnswers(data.StoredChoosedAnswers || []);
+          setStoredChoosedAnswers(data.choosedAnswers || []);
           if (data.quizStarted) {
             navigate("/quiz-page");
+          }else {
+            navigate("/");
           }
         } else {
           localStorage.removeItem("user");
@@ -68,6 +72,18 @@ function App() {
         setPopUpValue("Something went wrong!");
       })
     }
+
+    get(ref(db , "finished_users")).then((snapShot) => {
+      let data = snapShot.val();
+      if (data) {
+        let allUsers = [];
+        for (let key in data) {
+          allUsers.push(data[key]);
+        }
+        allUsers.sort((a, b) => a.score < b.score)
+        setAllPlayedUsers(allUsers);
+      }
+    })
   }, [user])
 
   const filterName = (name) => {
@@ -86,7 +102,7 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, allAnswers, setAllAnswers , StoredChoosedAnswers }}>
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, storedChoosedAnswers , setStoredChoosedAnswers , questions , setQuestions }}>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/sign-up" element={<SignUp />} />

@@ -29,7 +29,7 @@ function Main() {
   },[])
 
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName , userScore , userRank , setCurrentPage } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName , userScore , userRank } = useContext(AppContext);
   const emailRef = useRef(null);
 
   const copy_email = () => {
@@ -62,13 +62,13 @@ function Main() {
       <div className="top">
         <div className="hello_message"><p>Hello {filterName(userData.username || "")}!</p> <button onClick={logout}>Logout</button></div>
         <div className="items">
-          <div className="last_score container_p">Score <p>{userScore}</p></div>
+          <div className="last_score container_p">Score <p>{userData.score || 0}</p></div>
           <div className="rank container_p">Rank <p>#{userRank}</p></div>
         </div>
       </div>
       <div className="chat_button">
         <button onClick={() => setShowChat(true)}><div className="left_side"><i className="bi bi-chat-dots"></i> Chat</div> <i className="bi bi-chevron-right"></i></button>
-        <button onClick={() => navigate("/start-quiz")} className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
+        <button onClick={() => {userData.finished ? navigate("/result") : navigate("/start-quiz")}} className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
       </div>
       <div className="top_10_users">
         <div className="title">Top 10 Users</div>

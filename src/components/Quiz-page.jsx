@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 function QuizPage() {
     const navigate = useNavigate();
 
-    const { setShowSpinner, setUserData, showSpinner, setPopUpValue, userData, storedChoosedAnswers, setStoredChoosedAnswers, setUserScore, questions, setQuestions } = useContext(AppContext);
-    const [endsAt , setEndsAt] = useState(userData.quizEndsAt);
+    const { setShowSpinner, setUserData, showSpinner, setPopUpValue, userData, storedChoosedAnswers, setStoredChoosedAnswers, setUserScore, questions, setQuestions, setAllPlayedUsers, setUserRank, allPlayedUsers } = useContext(AppContext);
+    const [endsAt, setEndsAt] = useState(userData.quizEndsAt);
     const [showTimeout, setShowTimeout] = useState(false);
     const [questionIndex, setQuestionIndex] = useState(1);
     const [score, setScore] = useState(0);
@@ -32,6 +32,14 @@ function QuizPage() {
             if (interval) clearInterval(interval);
         };
     }, [showSpinner]);
+
+    useEffect(() => {
+        if(minutes === 0 && seconds === 0) {
+            setShowTimeout(true);
+            setPopUpValue("Time is up!");
+            finish();
+        }
+    },[minutes , seconds])
 
     useEffect(() => {
         if (showTimeout) {
@@ -74,81 +82,105 @@ function QuizPage() {
                 setPopUpValue("Sorry, an error occurred while fetching the questions!");
                 navigate("/");
             })
-        }else {
+        } else {
             setShowSpinner(false);
         }
     }, [questions])
 
     useEffect(() => {
         setEndsAt(userData.quizEndsAt);
-    },[userData])
+    }, [userData])
 
     const finish = () => {
-        let score = 0;
-        let correctQuestionPoints = 5;
-        let wrongAnswers = [];
-        let unAnsweredQuestions = [];
+        if (!userData.finished) {
+            let score = 0;
+            let correctQuestionPoints = 5;
+            let wrongAnswers = [];
+            let unAnsweredQuestions = [];
 
-        for (let i = 0; i < questions.length; i++) {
-            if (storedChoosedAnswers[i] === questions[i].correct_answer) {
-                score += correctQuestionPoints;
-            } else {
-                if (storedChoosedAnswers[i] === undefined) {
-                    unAnsweredQuestions.push(questions[i]);
+            for (let i = 0; i < questions.length; i++) {
+                if (storedChoosedAnswers[i] === questions[i].correct_answer) {
+                    score += correctQuestionPoints;
                 } else {
-                    wrongAnswers.push(questions[i]);
+                    if (storedChoosedAnswers[i] === undefined) {
+                        unAnsweredQuestions.push(questions[i]);
+                    } else {
+                        wrongAnswers.push(questions[i]);
+                    }
                 }
             }
-        }
-        setUserScore(score);
-        setShowSpinner(true);
-        let finishedAt = new Date().getTime();
-        set(ref(db, "finished_users/" + localStorage.getItem("user")), {
-            score: score,
-            username: userData.username,
-            userID: localStorage.getItem("user"),
-        })
-        update(ref(db, "users/" + localStorage.getItem("user")), {
-            finished: true,
-            finishedAt: finishedAt,
-            score: score,
-            quizStarted: false,
-        }).then(() => {
-            setShowSpinner(false);
-            navigate("/result");
-            let newUserData = {
-                email: userData.email,
+            setUserScore(score);
+            setShowSpinner(true);
+            let finishedAt = new Date().getTime();
+            set(ref(db, "finished_users/" + localStorage.getItem("user")), {
+                score: score,
+                username: userData.username,
+                userID: localStorage.getItem("user"),
+            }).then(() => {
+                const newPlayedUser = {
+                    score: score,
+                    username: userData.username,
+                    userID: localStorage.getItem("user"),
+                };
+                setAllPlayedUsers((prev) => {
+                    return [...prev, newPlayedUser];
+                })
+                let allUsers = allPlayedUsers;
+                allUsers.sort((a, b) => b.score - a.score);
+                setAllPlayedUsers(allUsers);
+                for (let i = 0; i < allUsers.length; i++) {
+                    if (allUsers[i].userID === localStorage.getItem("user")) {
+                        setUserRank(i + 1);
+                        break;
+                    }
+                }
+            })
+            update(ref(db, "users/" + localStorage.getItem("user")), {
                 finished: true,
                 finishedAt: finishedAt,
-                quizStarted: false,
-                quizEndsAt: userData.quizEndsAt,
                 score: score,
-                choosedAnswers: storedChoosedAnswers,
-                username: userData.username,
-                userID: userData.userID,
-            }
-            setUserData(newUserData);
-        }).catch((err) => {
-            console.log(err.code);
-            setPopUpValue("Sorry, an error occurred while finishing the quiz!");
-        })
+                quizStarted: false,
+            }).then(() => {
+                setShowSpinner(false);
+                navigate("/result");
+                let newUserData = {
+                    email: userData.email,
+                    finished: true,
+                    finishedAt: finishedAt,
+                    quizStarted: false,
+                    quizEndsAt: userData.quizEndsAt,
+                    score: score,
+                    choosedAnswers: storedChoosedAnswers,
+                    username: userData.username,
+                    userID: userData.userID,
+                }
+                setUserData(newUserData);
+            }).catch((err) => {
+                console.log(err.code);
+                setPopUpValue("Sorry, an error occurred while finishing the quiz!");
+            })
+        }else {
+            navigate("/result");
+        }
     }
 
     const setAnswer = (index) => {
-        const the_answer = questions[questionIndex - 1].answers[index];
-        let answers = storedChoosedAnswers;
-        answers[questionIndex - 1] = the_answer;
-        setStoredChoosedAnswers(answers);
-        update(ref(db, "users/" + localStorage.getItem("user")), {
-            choosedAnswers: storedChoosedAnswers,
-        }).catch((err) => {
-            console.log(err.code);
-            console.log("Cannot save the answers in the database!");;
-        })
+        if (!userData.finished) {
+            const the_answer = questions[questionIndex - 1].answers[index];
+            let answers = storedChoosedAnswers;
+            answers[questionIndex - 1] = the_answer;
+            setStoredChoosedAnswers(answers);
+            update(ref(db, "users/" + localStorage.getItem("user")), {
+                choosedAnswers: storedChoosedAnswers,
+            }).catch((err) => {
+                console.log(err.code);
+                console.log("Cannot save the answers in the database!");;
+            })
+        }
     }
 
     useEffect(() => {
-        if (userData.finished) {
+        if (userData.finished && window.location.pathname === "/quiz-page") {
             navigate("/result");
         }
     }, [])
@@ -164,10 +196,10 @@ function QuizPage() {
                 <div className="content">
                     <div className="question"><p>{questions.length && questions[questionIndex - 1].question}</p></div>
                     <div className="answers">
-                        <button onClick={() => setAnswer(0)} className={"answer " + (questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[0]}</button>
-                        <button onClick={() => setAnswer(1)} className={"answer " + (questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[1] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[1]}</button>
-                        <button onClick={() => setAnswer(2)} className={"answer " + (questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[2] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[2]}</button>
-                        <button onClick={() => setAnswer(3)} className={"answer " + (questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[3] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[3]}</button>
+                        <button onClick={() => setAnswer(0)} className={"answer " + (!window.Location.pathname === "/quiz-page" && questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "correct" : "incorrect") + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[0]}</button>
+                        <button onClick={() => setAnswer(1)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[1] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[1]}</button>
+                        <button onClick={() => setAnswer(2)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[2] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[2]}</button>
+                        <button onClick={() => setAnswer(3)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[3] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[3]}</button>
                     </div>
                 </div>
             </div>

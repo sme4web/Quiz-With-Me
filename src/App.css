@@ -320,7 +320,7 @@ body {
 
 .main_page .top {
   border-radius: 0px 0px 20px 20px ;
-  background-color: #eeeeeecb ;
+  background-color: #dddddd3b ;
   box-shadow: 0px 0px 10px #00000033 ;
   display: flex ;
   flex-direction: column ;
@@ -333,7 +333,7 @@ body {
 .main_page .top .hello_message {
   text-align: center ;
   font-weight: bold ;
-  color: #888 ;
+  color: #fff ;
   padding: 10px 15px ;
   border-bottom: 2px solid #eeeeeecb ;
   display: flex ;
@@ -454,9 +454,18 @@ body {
 
 .top_10_users .user:first-child {
   background: #fff ;
-  color: #eaee00 ;
   position: relative ;
   border: none ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+}
+
+.top_10_users .user .content {
+  flex: 1 ;
+  display: flex ;
+  align-items: center ;
+  justify-content: space-between ;
 }
 
 .top_10_users .user:first-child .left_side {
@@ -489,14 +498,13 @@ body {
 
 .top_10_users .user:first-child::after {
   content: '';
-  height: 100% ;
   width: 100% ;
+  height: 100% ;
+  flex: 1 ;
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   animation: gradient 5s ease infinite;
   position: absolute ;
-  top: -2px ;
-  left: -2px ;
   padding: 2px ;
   border-radius: 12px ;
   z-index: -1 ;
@@ -638,7 +646,7 @@ footer {
   overflow: auto ;
   scrollbar-width: none ;
   position: relative ;
-  flex: 1 ;
+  height: calc(100vh - 90px) ;
 }
 
 .chat_container .messages .message {

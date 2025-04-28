@@ -28,10 +28,9 @@ function App() {
   const [showChat, setShowChat] = useState(false);
   const [userScore, setUserScore] = useState(0);
   const [userRank, setUserRank] = useState(0);
-  const [allAnswers, setAllAnswers] = useState([]);
   const [storedChoosedAnswers, setStoredChoosedAnswers] = useState([]);
-  const [questions , setQuestions] = useState([]);
-  const [allPlayedUsers , setAllPlayedUsers] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [allPlayedUsers, setAllPlayedUsers] = useState([]);
 
   useEffect(() => {
     if (navigator.onLine) {
@@ -60,7 +59,7 @@ function App() {
           setStoredChoosedAnswers(data.choosedAnswers || []);
           if (data.quizStarted) {
             navigate("/quiz-page");
-          }else {
+          } else {
             navigate("/");
           }
         } else {
@@ -71,20 +70,36 @@ function App() {
       }).catch(() => {
         setPopUpValue("Something went wrong!");
       })
+    } else {
+      navigate("/sign-in");
     }
 
-    get(ref(db , "finished_users")).then((snapShot) => {
+    get(ref(db, "finished_users")).then((snapShot) => {
       let data = snapShot.val();
       if (data) {
         let allUsers = [];
         for (let key in data) {
           allUsers.push(data[key]);
         }
-        allUsers.sort((a, b) => a.score < b.score)
+        allUsers.sort((a, b) => b.score - a.score)
         setAllPlayedUsers(allUsers);
+        let userRank = 0;
+        for (let i = 0; i < allUsers.length; i++) {
+          if (allUsers[i].userID === user) {
+            userRank = i + 1;
+            break;
+          }
+        }
+        setUserRank(userRank);
       }
     })
   }, [user])
+
+  useEffect(() => {
+    let allUsers = allPlayedUsers;
+    allUsers.sort((a, b) => b.score - a.score);
+    setAllPlayedUsers(allUsers);
+  }, [allPlayedUsers])
 
   const filterName = (name) => {
     let maxLength = 13;
@@ -102,7 +117,7 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, storedChoosedAnswers , setStoredChoosedAnswers , questions , setQuestions }}>
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, storedChoosedAnswers, setStoredChoosedAnswers, questions, setQuestions, allPlayedUsers, setAllPlayedUsers }}>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/sign-up" element={<SignUp />} />
@@ -110,6 +125,7 @@ function App() {
           <Route path="/start-quiz" element={<EnterQuiz />} />
           <Route path="/quiz-page" element={<QuizPage />} />
           <Route path="/result" element={<Result />} />
+          <Route path="/see-answers" element={<QuizPage />} />
         </Routes>
         {showChat ? <Chat /> : ""}
         {showResetPasswordMessage ? <ResetPasswordMessage /> : ""}

@@ -4,7 +4,7 @@ import { db } from "./Firebase";
 import { set, ref, onChildAdded, onChildRemoved, remove, get } from "firebase/database";
 
 function Chat() {
-    const { setShowChat, setPopUpValue, userData , filterName } = useContext(AppContext);
+    const { setShowChat, setPopUpValue, userData, filterName } = useContext(AppContext);
     const [startAnimation, setStartAnimation] = useState(false);
     const [failedFetchingImage, setFailedFetchingImage] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -31,10 +31,8 @@ function Chat() {
     }, [])
 
     useEffect(() => {
-        if(messagesContainerRef.current.scrollTop === messagesContainerRef.current.scrollHeight) {
-            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
-        }
-    },[messages])
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }, [messages])
 
     const getMessages = () => {
         get(ref(db, "chat")).then((snapShot) => {
@@ -46,7 +44,7 @@ function Chat() {
                 for (let i = 0; i < messagesIds.length; i++) {
                     setMessages((prevMessages) => [...prevMessages, fetched_messages[messagesIds[i]]]);
                 }
-            }else {
+            } else {
                 setMessages([]);
             }
         })

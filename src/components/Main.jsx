@@ -25,11 +25,11 @@ function Main() {
     getRemainingTime();
     setInterval(() => {
       getRemainingTime();
-    },5000)
-  },[])
+    }, 5000)
+  }, [])
 
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat, setUser, setUserData , filterName , userScore , userRank } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData, filterName, userRank, allPlayedUsers } = useContext(AppContext);
   const emailRef = useRef(null);
 
   const copy_email = () => {
@@ -68,101 +68,26 @@ function Main() {
       </div>
       <div className="chat_button">
         <button onClick={() => setShowChat(true)}><div className="left_side"><i className="bi bi-chat-dots"></i> Chat</div> <i className="bi bi-chevron-right"></i></button>
-        <button onClick={() => {userData.finished ? navigate("/result") : navigate("/start-quiz")}} className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
+        <button onClick={() => { userData.finished ? navigate("/result") : navigate("/start-quiz") }} className="start_quiz_button"><div className="left_side"><i className="bi-card-list"></i> Start Quiz</div> <i className="bi-chevron-right"></i></button>
       </div>
       <div className="top_10_users">
         <div className="title">Top 10 Users</div>
         <div className="users">
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#1</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#2</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#3</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#4</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#5</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#6</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#7</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#8</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#9</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
-          <div className="user">
-            <div className="left_side">
-              <div className="rank">#10</div>
-              <div className="name">SME DEV</div>
-            </div>
-            <div className="right_side">
-              <div className="score">150</div>
-            </div>
-          </div>
+          {allPlayedUsers.length > 0 ? allPlayedUsers.map((user, index) => {
+            return (
+              <div className="user" key={"user_" + index}>
+                <div className="content">
+                  <div className="left_side">
+                    <div className="rank">#{index + 1}</div>
+                    <div className="name">{filterName(user.username || "")}</div>
+                  </div>
+                  <div className="right_side">
+                    <div className="score">{user.score}</div>
+                  </div>
+                </div>
+              </div>
+            )
+          }) : ""}
         </div>
         <button className="show_all_users">Show All Users</button>
       </div>

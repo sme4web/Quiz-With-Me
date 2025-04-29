@@ -9,28 +9,35 @@ function Main() {
   const [remainingHours, setRemainingHours] = useState(0);
   const [remainingMinutes, setRemainingMinutes] = useState(0);
 
-  const getRemainingTime = () => {
-    const targetDay = new Date("May 2 2025 00:00:00").getTime();
-    const distance = targetDay - new Date().getTime();
-
-    const days = Math.floor(distance / 1000 / 60 / 60 / 24);
-    const hours = Math.floor(distance / 1000 / 60 / 60) % 24;
-    const minutes = Math.floor(distance / 1000 / 60) % 60;
-    setRemainingDays(days);
-    setRemainingHours(hours)
-    setRemainingMinutes(minutes);
-  }
-
   useEffect(() => {
-    getRemainingTime();
-    setInterval(() => {
+    fetch(process.env.REACT_APP_NEXT_QUIZ_API).then((res) => res.json()).then((data) => {
+      let nextQuiz = new Date(data.data[0].date).getTime();
+
+      const getRemainingTime = () => {
+        const distance = nextQuiz - new Date().getTime();
+    
+        const days = Math.floor(distance / 1000 / 60 / 60 / 24);
+        const hours = Math.floor(distance / 1000 / 60 / 60) % 24;
+        const minutes = Math.floor(distance / 1000 / 60) % 60;
+        setRemainingDays(days);
+        setRemainingHours(hours)
+        setRemainingMinutes(minutes);
+      }
       getRemainingTime();
-    }, 5000)
+      setInterval(() => {
+        getRemainingTime();
+      }, 5000)
+    }).catch((err) => {
+      console.log(err);
+      setPopUpValue("An error occurred while fetching the next quiz date!");
+    })
   }, [])
 
+
   const email = "sme.dev212@gmail.com";
-  const { userData, setPopUpValue, setShowChat, setUser, setUserData, filterName, userRank, allPlayedUsers } = useContext(AppContext);
+  const { userData, setPopUpValue, setShowChat, setUser, setUserData, filterName, userRank, allPlayedUsers , topTenUsers , setShowAllUsers } = useContext(AppContext);
   const emailRef = useRef(null);
+
 
   const copy_email = () => {
     const canCopy = "clipboard" in navigator;
@@ -73,7 +80,7 @@ function Main() {
       <div className="top_10_users">
         <div className="title">Top 10 Users</div>
         <div className="users">
-          {allPlayedUsers.length > 0 ? allPlayedUsers.map((user, index) => {
+          {topTenUsers.length > 0 ? topTenUsers.map((user, index) => {
             return (
               <div className="user" key={"user_" + index}>
                 <div className="content">
@@ -87,9 +94,9 @@ function Main() {
                 </div>
               </div>
             )
-          }) : ""}
+          }) : <p className="no_users">Nobody has played the quiz yet.</p>}
         </div>
-        <button className="show_all_users">Show All Users</button>
+        {allPlayedUsers.length > 10 ? <button onClick={() => setShowAllUsers(true)} className="show_all_users">Show All Users</button> : ""}
       </div>
       <div className="bottom_content">
         <div className="next_quiz_after">

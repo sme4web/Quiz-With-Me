@@ -162,7 +162,7 @@ body {
   color: #fff ;
 }
 
-.pop_up_container , .no_connection , .reset_password_message_container {
+.pop_up_container , .no_connection , .reset_password_message_container , .showAllUsers {
   position: fixed ;
   height: 100% ;
   width: 100% ;
@@ -204,7 +204,7 @@ body {
   flex-direction: column ;
 }
 
-.reset_password_message_container form .title , .top_10_users .title , .contact_with_me .title , .next_quiz_after .title , .chat_container .title {
+.reset_password_message_container form .title , .top_10_users .title , .contact_with_me .title , .next_quiz_after .title , .chat_container .title , .showAllUsers .main_content .title {
   padding: 10px ;
   border-bottom: 2px solid #777 ;
   color: #777 ;
@@ -218,7 +218,6 @@ body {
 
 .no_connection .content p {
   text-align: center ;
-  /* font-family: cursive ; */
   font-weight: bold ;
 }
 
@@ -233,13 +232,11 @@ body {
   border-bottom: 2px solid #444 ;
   padding: 10px ;
   text-align: center ;
-  /* font-family: cursive ; */
   font-weight: bold ;
 }
 
 .pop_up_container .content .message {
   text-align: center ;
-  /* font-family: cursive ; */
   font-weight: bold ;
   padding: 10px 20px 0px 20px ;
   color: #888 ;
@@ -252,7 +249,6 @@ body {
   border-radius: 100px ;
   text-align: center ;
   font-weight: bold ;
-  /* font-family: cursive ; */
   background: #ff3030a9 ;
   color: #222 ;
   cursor: pointer ;
@@ -269,7 +265,6 @@ body {
   align-items: center ;
   justify-content: center ;
   color: #888 ;
-  /* font-family: cursive ; */
   margin-top: 5px ;
 }
 
@@ -312,7 +307,7 @@ body {
 
 .main_page {
   flex: 1 ;
-  min-height: 100% ;
+  min-height: 100vh ;
   display: flex ;
   flex-direction: column ;
   position: relative ;
@@ -373,7 +368,6 @@ body {
   gap: 5px ;
   border: 2px solid #fff ;
   font-weight: bold ;
-  /* font-family: cursive ; */
   color: #888 ; 
 }
 
@@ -419,6 +413,8 @@ body {
   background-color: #eeeeeecb ;
   margin-top: 0 ;
   z-index: 1 ;
+  padding-bottom: 10px ;
+  flex: 1 ; 
 }
 
 .top_10_users .title , .contact_with_me .title , .next_quiz_after .title , .chat_container .title {
@@ -432,7 +428,7 @@ body {
   margin-top: 5px ;
 }
 
-.top_10_users .users .user {
+.top_10_users .users .user , .showAllUsers .main_content .users .user {
   display: flex ;
   align-items: center ;
   justify-content: space-between ;
@@ -444,12 +440,23 @@ body {
   cursor: pointer ;
 }
 
-.top_10_users .user .left_side {
+.top_10_users .user .left_side , .showAllUsers .main_content .users .user .left_side {
   display: flex ;
   align-items: center ;
   gap: 5px ;
   font-weight: bold ;
   color: #666 ;
+}
+
+.top_10_users p.no_users {
+  text-align: center ;
+  padding: 10px ;
+  border-radius: 10px ;
+  color: #888 ; 
+  font-weight: bold ;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 16px ;
+  margin-top: 10px ;
 }
 
 .top_10_users .user:first-child {
@@ -461,7 +468,7 @@ body {
   justify-content: center ;
 }
 
-.top_10_users .user .content {
+.top_10_users .user .content , .showAllUsers .main_content .users .user .content {
   flex: 1 ;
   display: flex ;
   align-items: center ;
@@ -511,20 +518,20 @@ body {
 
 }
 
-.top_10_users .user .score {
+.top_10_users .user .score , .showAllUsers .main_content .users .user .score {
   padding: 0px 6px 0px 5px ;
   color: #fff ;
   background: #00c3ff ;
   border-radius: 5px ;
 }
 
-.top_10_users button.show_all_users {
+.top_10_users button.show_all_users , .showAllUsers .main_content button.show_all_users {
   padding: 10px ;
   background: #eeeeeecb ;
   border: none ;
   border-radius: 10px ;
   color: #888 ;
-  margin: 5px 10px 10px 10px ;
+  margin: 5px 10px 0px 10px ;
   cursor: pointer ;
   font-weight: bold ;
 }
@@ -919,6 +926,20 @@ footer {
   border: none ; 
 }
 
+.quiz_page_container .question_container .answers .answer.correct {
+  background: #0b0 ;
+  color: #fff ;
+}
+
+.quiz_page_container .question_container .answers .answer.active.correct {
+  background: #090 ;
+}
+
+.quiz_page_container .question_container .answers .answer.active.incorrect {
+  background: #f05 ;
+  color: #fff ;
+}
+
 .controls_container {
   display: flex ;
   align-items: center ;
@@ -938,6 +959,13 @@ footer {
   color: #555 ;
   font-weight: bold ;
   font-family: "Chakra Petch", sans-serif;
+}
+
+.controls_container button.home {
+  flex: 1 ;
+  text-align: center ;
+  margin: 0px 5px ;
+  font-size: 13px ;
 }
 
 .controls_container button:disabled {
@@ -1025,6 +1053,29 @@ footer {
   margin: 10px ;
   cursor: pointer ;
   font-family: "Chakra Petch", sans-serif;
+}
+
+.showAllUsers {
+  z-index: 5 ;
+}
+
+.showAllUsers .main_content {
+  display: flex ;
+  flex-direction: column ;
+  margin: 10px ;
+  width: 400px ;
+  background: #eeeeeecb ;
+  border-radius: 10px ;
+}
+
+.showAllUsers .main_content .users {
+  max-height: 300px ;
+  overflow: auto ;
+  scrollbar-width: none ;
+}
+
+.showAllUsers .main_content button.show_all_users {
+  margin-bottom: 7px ;
 }
 
 @keyframes go_up {

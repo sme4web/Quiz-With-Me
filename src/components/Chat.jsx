@@ -37,7 +37,6 @@ function Chat() {
     const getMessages = () => {
         get(ref(db, "chat")).then((snapShot) => {
             const fetched_messages = snapShot.val();
-            console.log(fetched_messages);
             if (fetched_messages) {
                 const messagesIds = Object.keys(fetched_messages);
                 setMessages([]);

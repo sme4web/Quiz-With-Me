@@ -13,6 +13,7 @@ import Chat from "./components/Chat";
 import QuizPage from "./components/Quiz-page";
 import EnterQuiz from "./components/Enter-Quiz";
 import Result from "./components/Result";
+import ShowAllUsers from "./components/showAllUsers";
 import './App.css';
 
 export const AppContext = createContext();
@@ -31,6 +32,30 @@ function App() {
   const [storedChoosedAnswers, setStoredChoosedAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [allPlayedUsers, setAllPlayedUsers] = useState([]);
+  const [topTenUsers, setTopTenUsers] = useState([]);
+  const [otherUsers , setOtherUsers] = useState([]);
+  const [showAllUsers, setShowAllUsers] = useState(false);
+
+      // useEffect(() => {
+      //       const IDGenerator = () => {
+      //           const id_symbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+      //           let id = "";
+      //           for (let i = 0; i < 30; i++) {
+      //               id += id_symbols[Math.floor(Math.random() * id_symbols.length)];
+      //           }
+      //           return id;
+      //       }
+      //       let names = ["Ali", "Sara", "John", "Doe", "Jane", "Smith", "Michael", "Emily", "David", "Sophia"];
+      //       for(let i = 0; i < 20; i++) {
+      //         let userData = {
+      //           username: names[Math.floor(Math.random() * names.length)],
+      //           userID: IDGenerator(),
+      //           score: Math.floor(Math.random() * 200),
+      //         };
+      //         set(ref(db, "finished_users/" + userData.userID), userData)
+      //       }
+      // },[])
+  
 
   useEffect(() => {
     if (navigator.onLine) {
@@ -60,7 +85,13 @@ function App() {
           if (data.quizStarted) {
             navigate("/quiz-page");
           } else {
-            navigate("/");
+            if (window.location.pathname === "/see-answers" || window.location.pathname === "/quiz-page") {
+              navigate("/see-answers");
+            } else if (window.location.pathname === "/result") {
+              navigate("/result");
+            } else {
+              navigate("/");
+            }
           }
         } else {
           localStorage.removeItem("user");
@@ -80,9 +111,12 @@ function App() {
         let allUsers = [];
         for (let key in data) {
           allUsers.push(data[key]);
-        }
+        }     
+
         allUsers.sort((a, b) => b.score - a.score)
         setAllPlayedUsers(allUsers);
+        setTopTenUsers(allUsers.slice(0, 10));
+        setOtherUsers(allUsers.slice(10, allUsers.length));
         let userRank = 0;
         for (let i = 0; i < allUsers.length; i++) {
           if (allUsers[i].userID === user) {
@@ -117,7 +151,7 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, storedChoosedAnswers, setStoredChoosedAnswers, questions, setQuestions, allPlayedUsers, setAllPlayedUsers }}>
+      <AppContext.Provider value={{ setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, userData, setUserData, setShowChat, filterName, showSpinner, setUserScore, setUserRank, userScore, userRank, storedChoosedAnswers, setStoredChoosedAnswers, questions, setQuestions, allPlayedUsers, setAllPlayedUsers , topTenUsers , otherUsers , setShowAllUsers , setTopTenUsers , setOtherUsers }}>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/sign-up" element={<SignUp />} />
@@ -127,6 +161,7 @@ function App() {
           <Route path="/result" element={<Result />} />
           <Route path="/see-answers" element={<QuizPage />} />
         </Routes>
+        {showAllUsers ? <ShowAllUsers /> : ""}
         {showChat ? <Chat /> : ""}
         {showResetPasswordMessage ? <ResetPasswordMessage /> : ""}
         {popUpValue ? <PopUpMessage value={popUpValue} setPopUpValue={setPopUpValue} /> : ""}

@@ -12,7 +12,7 @@ const SignIn = () => {
     const emailInpRef = useRef(null);
     const passwordInpRef = useRef(null);
 
-    const { setShowSpinner, setPopUpValue, setCurrentPage, setShowResetPasswordMessage, setUser, setUserData } = useContext(AppContext);
+    const { setShowSpinner, setPopUpValue, setShowResetPasswordMessage, setUser, setUserData } = useContext(AppContext);
 
     const sign_in = (e) => {
         e.preventDefault();

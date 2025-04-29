@@ -12,7 +12,7 @@ const SignUp = () => {
     const passwordInpRef = useRef(null);
     const userNameInpRef = useRef(null);
 
-    const { setShowSpinner, setPopUpValue, setCurrentPage, setUser, setUserData } = useContext(AppContext);
+    const { setShowSpinner, setPopUpValue, setUser, setUserData } = useContext(AppContext);
 
     const IDGenerator = () => {
         const id_symbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Result() {
   const navigate = useNavigate();
 
-  const { userData, questions, setQuestions, setPopUpValue , userRank , allPlayedUsers } = useContext(AppContext);
+  const { userData, questions, setQuestions, setPopUpValue, userRank, allPlayedUsers , setAllPlayedUsers , setUserRank , setTopTenUsers , setOtherUsers} = useContext(AppContext);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [notAnsweredQuestions, setNotAnsweredQuestions] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState([]);
@@ -22,8 +22,56 @@ function Result() {
         setPopUpValue("Sorry, an error occurred while fetching the questions!");
         navigate("/");
       })
+    } else {
+      if (!questions[0].answers) {
+        for (let i = 0; i < questions.length; i++) {
+          let answers = [questions[i].correct_answer, questions[i].wrong_answer_1, questions[i].wrong_answer_2, questions[i].wrong_answer_3];
+          const randomAnswers = () => {
+            const newAnswers = [];
+            while (newAnswers.length < 4) {
+              const randomIndex = Math.floor(Math.random() * answers.length);
+              newAnswers.push(answers[randomIndex]);
+              answers.splice(randomIndex, 1);
+            }
+            answers = newAnswers;
+          }
+          randomAnswers();
+          const newQuestionObject = {
+            question: questions[i].the_question,
+            answers: answers,
+            correct_answer: questions[i].correct_answer,
+          };
+          questions[i] = newQuestionObject;
+        }
+        setQuestions(questions);
+      }
     }
   }, [questions])
+
+  useEffect(() => {
+    if(userData.finished) {
+      let allUsers = allPlayedUsers;
+      let newUser = {
+        userID: localStorage.getItem("user"),
+        username: userData.username,
+        score: userData.score,
+      };
+      allUsers.push(newUser);
+      allUsers.sort((a, b) => b.score - a.score);
+      setAllPlayedUsers(allUsers);
+      setTopTenUsers(allUsers.slice(0, 10));
+      setOtherUsers(allUsers.slice(10, allUsers.length));
+      
+      for(let i = 0; i < allUsers.length; i++) {
+        if(allUsers[i].userID === localStorage.getItem("user")) {
+          setUserRank(i + 1);
+          break;
+        }
+      }
+    }else {
+      navigate("/");
+    }
+  },[])
 
   useEffect(() => {
     if (userData.finished) {
@@ -45,8 +93,8 @@ function Result() {
         }
       }
 
-      for(let i = 0; i < correctAnswers.length; i++) {
-        if(correctAnswers[i] === undefined) {
+      for (let i = 0; i < correctAnswers.length; i++) {
+        if (correctAnswers[i] === undefined) {
           correctAnswers.splice(i, 1);
           i--;
         }
@@ -56,7 +104,7 @@ function Result() {
       setWrongAnswers(wrongAnswers);
       setNotAnsweredQuestions(notAnsweredQuestions);
     }
-  }, [userData])
+  }, [userData, questions])
 
   useEffect(() => {
     setPassedMinutes(Math.floor((userData.finishedAt - (userData.quizEndsAt - 3600000)) / 1000 / 60));

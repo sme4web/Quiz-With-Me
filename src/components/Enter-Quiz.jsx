@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 function EnterQuiz() {
   const navigate = useNavigate();
-  const { setPopUpValue, setQuestions , setShowSpinner , questions , setUserData , userData } = useContext(AppContext);
+  const { setPopUpValue, setQuestions , setShowSpinner , questions , setUserData , userData , allPlayedUsers } = useContext(AppContext);
 
   useEffect(() => {
     setShowSpinner(true);
@@ -66,7 +66,7 @@ function EnterQuiz() {
         <div className="score">Total Score <p>{questions.length * 5}</p></div>
         <div className="time">Total Time <p>60:00</p></div>
         <div className="questions">Questions Number <p>{questions.length}</p></div>
-        <div className="user_played_quiz">User Played The Quiz <p>10</p></div>
+        <div className="user_played_quiz">User Played The Quiz <p>{allPlayedUsers.length}</p></div>
       </div>
       <button onClick={startQuiz} className="start_quiz">Start Quiz</button>
     </div>

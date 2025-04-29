@@ -7,39 +7,40 @@ import { useNavigate } from 'react-router-dom';
 function QuizPage() {
     const navigate = useNavigate();
 
-    const { setShowSpinner, setUserData, showSpinner, setPopUpValue, userData, storedChoosedAnswers, setStoredChoosedAnswers, setUserScore, questions, setQuestions, setAllPlayedUsers, setUserRank, allPlayedUsers } = useContext(AppContext);
-    const [endsAt, setEndsAt] = useState(userData.quizEndsAt);
+    const { setShowSpinner, setUserData, showSpinner, setPopUpValue, userData, storedChoosedAnswers, setStoredChoosedAnswers, setUserScore, questions  ,  setQuestions, setAllPlayedUsers, setUserRank, allPlayedUsers } = useContext(AppContext);
     const [showTimeout, setShowTimeout] = useState(false);
     const [questionIndex, setQuestionIndex] = useState(1);
-    const [score, setScore] = useState(0);
-    const [notAnsweredQuestions, setNotAnsweredQuestions] = useState([]);
-    const [wrongAnswers, setWrongAnswers] = useState([]);
 
-    const [minutes, setMinutes] = useState(Math.floor((endsAt - new Date().getTime()) / 1000 / 60));
-    const [seconds, setSeconds] = useState(Math.floor((endsAt - new Date().getTime()) / 1000 % 60));
+    const [minutes, setMinutes] = useState(Math.floor((userData.quizEndsAt - new Date().getTime()) / 1000 / 60));
+    const [seconds, setSeconds] = useState(Math.floor((userData.quizEndsAt - new Date().getTime()) / 1000 % 60));
 
     useEffect(() => {
         let interval;
-
-        if (!showSpinner) {
+        if (!showSpinner && !userData.finished) {
             interval = setInterval(() => {
-                setSeconds(Math.floor((endsAt - new Date().getTime()) / 1000 % 60));
-                setMinutes(Math.floor((endsAt - new Date().getTime()) / 1000 / 60));
+                setSeconds(Math.floor((userData.quizEndsAt - new Date().getTime()) / 1000 % 60));
+                setMinutes(Math.floor((userData.quizEndsAt - new Date().getTime()) / 1000 / 60));
             }, 1000);
+        }
+
+        if(userData) {
+            setShowSpinner(false);
+        }else {
+            setShowSpinner(true);
         }
 
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [showSpinner]);
+    }, [showSpinner , userData]);
 
     useEffect(() => {
-        if(minutes === 0 && seconds === 0) {
+        if (minutes === 0 && seconds === 0) {
             setShowTimeout(true);
             setPopUpValue("Time is up!");
             finish();
         }
-    },[minutes , seconds])
+    }, [minutes, seconds])
 
     useEffect(() => {
         if (showTimeout) {
@@ -83,13 +84,31 @@ function QuizPage() {
                 navigate("/");
             })
         } else {
-            setShowSpinner(false);
+            if (!questions[0].answers) {
+                for (let i = 0; i < questions.length; i++) {
+                    let answers = [questions[i].correct_answer , questions[i].wrong_answer_1, questions[i].wrong_answer_2, questions[i].wrong_answer_3];
+                    const randomAnswers = () => {
+                        const newAnswers = [];
+                        while (newAnswers.length < 4) {
+                            const randomIndex = Math.floor(Math.random() * answers.length);
+                            newAnswers.push(answers[randomIndex]);
+                            answers.splice(randomIndex, 1);
+                        }
+                        answers = newAnswers;
+                    }
+                    randomAnswers();
+                    const newQuestionObject = {
+                        question: questions[i].the_question,
+                        answers: answers,
+                        correct_answer: questions[i].correct_answer,
+                    };
+                    questions[i] = newQuestionObject;
+                }
+                setQuestions(questions);
+                setShowSpinner(false);
+            }
         }
     }, [questions])
-
-    useEffect(() => {
-        setEndsAt(userData.quizEndsAt);
-    }, [userData])
 
     const finish = () => {
         if (!userData.finished) {
@@ -159,7 +178,7 @@ function QuizPage() {
                 console.log(err.code);
                 setPopUpValue("Sorry, an error occurred while finishing the quiz!");
             })
-        }else {
+        } else {
             navigate("/result");
         }
     }
@@ -196,15 +215,16 @@ function QuizPage() {
                 <div className="content">
                     <div className="question"><p>{questions.length && questions[questionIndex - 1].question}</p></div>
                     <div className="answers">
-                        <button onClick={() => setAnswer(0)} className={"answer " + (!window.Location.pathname === "/quiz-page" && questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "correct" : "incorrect") + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[0]}</button>
-                        <button onClick={() => setAnswer(1)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[1] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[1]}</button>
-                        <button onClick={() => setAnswer(2)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[2] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[2]}</button>
-                        <button onClick={() => setAnswer(3)} className={"answer " + (questions.length && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[3] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers[3]}</button>
+                        <button onClick={() => setAnswer(0)} className={"answer " + (questions.length && (questions[questionIndex - 1] && questions[questionIndex - 1].answers) && window.location.pathname !== "/quiz-page" && questions[questionIndex - 1].correct_answer === questions[questionIndex - 1].answers[0] ? "correct" : (window.location.pathname === "/see-answers" ? "incorrect" : "")) + " " + (questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[0] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1].answers[0]}</button>
+                        <button onClick={() => setAnswer(1)} className={"answer " + (questions.length && questions[questionIndex - 1] && questions[questionIndex - 1].answers && window.location.pathname !== "/quiz-page" && questions[questionIndex - 1].correct_answer === questions[questionIndex - 1].answers[1] ? "correct" : (window.location.pathname === "/see-answers" ? "incorrect" : "")) + " " +  (questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[1] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1].answers[1]}</button>
+                        <button onClick={() => setAnswer(2)} className={"answer " + (questions.length && questions[questionIndex - 1] && questions[questionIndex - 1].answers && window.location.pathname !== "/quiz-page" && questions[questionIndex - 1].correct_answer === questions[questionIndex - 1].answers[2] ? "correct" : (window.location.pathname === "/see-answers" ? "incorrect" : "")) + " " +  (questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[2] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1].answers[2]}</button>
+                        <button onClick={() => setAnswer(3)} className={"answer " + (questions.length && questions[questionIndex - 1] && questions[questionIndex - 1].answers && window.location.pathname !== "/quiz-page" && questions[questionIndex - 1].correct_answer === questions[questionIndex - 1].answers[3] ? "correct" : (window.location.pathname === "/see-answers" ? "incorrect" : "")) + " " +  (questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] && storedChoosedAnswers[questionIndex - 1] === questions[questionIndex - 1].answers[3] ? "active" : "")}>{questions.length && questions[questionIndex - 1].answers && questions[questionIndex - 1].answers[3]}</button>
                     </div>
                 </div>
             </div>
             <div className="controls_container">
-                <button disabled={questionIndex === 1 && true} className="control" onClick={() => setQuestionIndex(questionIndex - 1)}><i className="bi bi-chevron-left"></i> Prev</button>
+                <button className="control" onClick={() => {questionIndex > 1 ? setQuestionIndex(questionIndex - 1) : console.log("No questions before this questions.")}}><i className="bi bi-chevron-left"></i> Prev</button>
+                {userData.finished ? <button className="home" onClick={() => navigate("/")}>Home Page</button> : ""}
                 <button className="control" onClick={() => { questionIndex === questions.length ? finish() : setQuestionIndex(questionIndex + 1) }}>{questionIndex === questions.length ? "Finish" : "Next"} {questionIndex === questions.length ? "" : <i className="bi bi-chevron-right"></i>}</button>
             </div>
         </div>
